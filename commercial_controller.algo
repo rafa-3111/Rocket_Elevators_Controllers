@@ -1,0 +1,44 @@
+-----------
+
+SEQUENCE Elevators WITH direciton AND elevatorsList AND elevatorState AND door AND destinationFloor
+    SET NoffFloors TO 60
+    SET Direcitons TO direciton                 // OR up OR down
+    SET ElevatorsList TO elevatorsList          // Array OF numb floors
+    SET ElevatorState TO elevatorState          // state of elevator MOVE or IDLE
+    SET Door TO door                            // close or open
+    SET DestinationFloor TO destinationFloor    // Destination floor or idle
+
+
+ENDSEQUENCE
+
+SEQUENCE Column
+
+   Column A:[B6 TO B1] + RC
+   Column B:[2 TO 20]  + RC
+   Column C:[21 TO 40] + RC
+   Column D:[41 TO 60] + RC
+
+ENDSEQUENCE   
+    
+SEQUENCE Battery USING ColumnOfList
+   INIT ColumnList TO ColumnOfList
+   INIT BatteryOfList TO Array OF Battery
+
+ENDSEQUENCE
+
+------------
+//SCENARIO 1 
+
+    Call Column RETURNING columnElevatorA
+    Call Column RETURNING columnElevatorB
+    Call Column RETURNING columnElevatorC
+    Call Column RETURNING columnElevatorD
+
+    Call Elevators WITH down AND columnElevatorB AND move AND close AND 5 RETURNING elevatorB1    
+    Call Elevators WITH up AND columnElevatorB AND move AND close AND 15 RETURNING elevatorB2   
+    Call Elevators WITH down AND columnElevatorB AND move AND close AND RC RETURNING elevatorB3    
+    Call Elevators WITH down AND columnElevatorB AND move AND close AND 2 RETURNING elevatorB4    
+    Call Elevators WITH down AND columnElevatorB AND move AND close AND RC RETURNING elevatorB5    
+
+
+   

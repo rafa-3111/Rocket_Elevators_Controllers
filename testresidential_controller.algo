@@ -1,0 +1,68 @@
+SEQUENCE
+  GET sourcefloor
+  GET callbutton 
+
+  SET destinationsFloor equal callButonDestination
+
+  IF sourcefloor equal destinationsFloor
+   
+     buttonLightOff(sourcefloor)
+     
+     exit code
+  
+  ELSE buttonLightOn(destinationsFloor)
+     
+   GET columns 
+   GET elevator
+   GET door
+
+   SET movedfloor egual sourcefloor
+
+   updownMoveElevator equal getcalcdestinationsFloor// can be +1 or -1 
+
+   DO buttonLightOn(movedfloor)   
+
+       buttonLigthOFF(movedfloor-movementVar )
+
+       usercall equal checkcalling
+
+   
+    IF usercall
+    
+       destinationsFloor add usercall
+
+       sort destinationsFloor    
+
+    IF movedFloor in destinationFloor          
+        THEN 
+           stop 
+           open(10sec)
+           closedoor 
+
+    IF  callbutton checked
+      
+    GET callbutton
+
+        destinationFloor add callbutton
+
+        sort destinationFloor
+
+        remove destinationFloor(movedFloor)  
+
+    END IF movedFloor egual movedFloorplus/minus movementVAr
+
+    WHILE movedFloor different destinationsfloor
+
+    remove destinationFloor(movedFloor)
+
+    buttonLightOff(destinationFloor)
+    
+    THEN
+       stop
+       open(10sec)
+       claosedoor 
+
+    END IF  END SEQUENCE 
+                    
+
+                  
