@@ -12,8 +12,10 @@ IF(ElevatorsListActive IS not null ) THEN
     CALL findelevator USING ElevatorsListActive
 ELSE
           CALL findelevator USING ElevatorsListIdle
-RETURN elevatorstars ENDSEQUENCE
+RETURN elevatorstars 
+ENDSEQUENCE
 
+<--------------------------------->
 
 <---------------FIND idle ELEVATOR---------------------->
 SEQUENCE findNElev USING Listselected
@@ -25,6 +27,7 @@ IF (|numelevator_floors-request_floor| < distance) THEN
 ENDIF
 ENDFOR 
 ENDSEQUENCE 
+<--------------------------------->
 
 <---------------FIND COLUMN---------------------->
 SEQUENCE findColum USING numelevator
@@ -32,12 +35,7 @@ SEQUENCE findColum USING numelevator
     ElevatorsColumn 
 
 ENDSEQUENCE 
-
-
-
-
-
-
+<--------------------------------->
 
 
 <--------------- COLUMN ---------------------->
@@ -65,6 +63,7 @@ SEQUENCE Elevators WITH direciton AND elevatorsList AND elevatorState AND door A
     SET DestinationFloor TO destinantionFloor   // Floor destination position
     SET FloorPosition TO floorposition          // floor Elevator position
     SET ColumsList TO elevatorColumn            // Columns list
+ENDSEQUENCE   
 <--------------------------------->
 
 
@@ -91,7 +90,7 @@ ENDSEQUENCE
 
 <-----------------REQUEST ELEVATOR----------------->
 SEQUENCE requestElevator USING Elevator AND requestfloor	
-    SET elevatorstars = FloorPosition
+    SET elevatorstars = Elevator FloorPosition
 	SET destinationFloor = requestFloor 
 	SET elevDirection = CALL elevDirection USING elevatorstars AND requestfloor RETURNING elevDirection
 	DO 		
@@ -110,9 +109,9 @@ Someone is on floor 3 and wants to go to the 7th floor.
 Elevator A is expected to be sent.
 
 SEQUENCE MAIN_SCENARIO1 
-    SET elevatorColumn = CALL Column                                                                            // Set columns elevators 
+    SET elevatorColumn = INSTANTIATE Column                                                                      // Set columns elevators 
     GET elevatorStartPositionElevatorA                                                                          // ElevatorA at 2 Floor
-    SET elevatorFloorA TO CALL Elevator WITH ElevatorA 
+    SET elevatorFloorA TO INSTANTIATE Elevator WITH ElevatorA 
                                         AND idle AND close AND empty 
                                         AND elevatorStartPosition  
                                         AND  elevatorColumn                                                     // SET ElevatorA at Start Position
@@ -157,65 +156,91 @@ SEQUENCE MAIN_SCENARIO2
                                             AND  elevatorColumn                                                // Set ElevatorB at Start Position 
     SET  user1Floor = CALL ButtonFloor RETURNING user1Floor                                                   // User request button to 1 floor
 
-    CALL requestElevator WITH elevatorFloorB AND userFloor RETURNING requestElevator                          // Move ElevatorB to FLoor Request
+    CALL requestElevator WITH elevatorFloorB AND user1Floor RETURNING requestElevator                          // Move ElevatorB to FLoor Request
     SET elevatorFloorA door = open                                                                            // Open Door Elevator
     SET elevatorStartPosition = userFloor 
 
-    SET userFloor = CALL ButtonFloor RETURNING userFloor                                                       // User request button to 6 floor
-    CALL requestElevator WITH elevatorFloorB AND userFloor  RETURNING requestElevator                          // Move ElevatorB to FLoor Request
-    SET elevatorFloorA door = open                                                                             // Set Door to OPEN  ElevatorB
-    SET elevatorStartPosition = userFloor                                                                       // Set Start Position Same Floor ElevatorB
-    SET elevatorFloorA ElevatorState = idle                                                                     // SET ElevatorB to Idle
+    SET user1Floor = CALL ButtonFloor RETURNING user1Floor                                                       // User request button to 6 floor
+    CALL requestElevator WITH elevatorFloorB AND user1Floor  RETURNING requestElevator                          // Move ElevatorB to FLoor Request
+    SET elevatorFloorB door = open                                                                             // Set Door to OPEN  ElevatorB
+    SET elevatorStartPosition = user1Floor                                                                     // Set Start Position Same Floor ElevatorB
+    SET elevatorFloorB ElevatorState = idle                                                                    // Set ElevatorB to Idle
 
     GET elevatorStartPositionElevatorB                                                                         // Elevator B at 6 Floor
     SET elevatorFloorB TO CALL Elevator WITH ElevatorB
                                         AND idle AND close AND empty 
                                         AND elevatorStartPositionElevatorB 
-                                        AND elevatorColumn                                                      // SET ElevatorB at Start Position
+                                        AND elevatorColumn                                                      // Set ElevatorB at Start Position
         
 
 ENDSEQUENCE
 
+---------------
 
-
-
-
---
     // elevatorFloorB IDLE 6
     SET user2Floor TO 3 
     SET destination2Floor TO 5 
 
---------------
-    SET elevatorColumn = CALL Column
-    SET elevatorStartPositionElevatorB
-    SET elevatorFloorB TO CALL Elevator WITH ElevatorB AND idle 
-                                            AND close AND empty 
-                                            AND elevatorStartPosition 
-                                            AND  elevatorColumn    
+
+    SET elevatorColumn = CALL Column                                                                           // Set columns elevators
+    SET elevatorStartPositionElevatorB                                                                        // ElevatorB at 3 Floor
+    SET elevatorFloorB TO CALL Elevator WITH ElevatorB 
+                                            AND idle AND close AND empty 
+                                            AND elevatorStartPosition                                   
+                                            AND  elevatorColumn                                             // Set ElevatorB at Start Position 
+    SET user2Floor = CALL ButtonFloor RETURNING user2Floor                                                  // User request button to 5 floor
 
 
-    CALL requestElevator WITH elevatorFloorB AND user2Floor AND elevatorColumn RETURNING elevatorFloorB
-    CALL Door WITH elevatorFloorB 
-    Call ButtonFloor WITH 5 RETURNING user2Floor
+
+    CALL requestElevator WITH elevatorFloorB AND user2Floor RETURNING requestElevator                          // Move ElevatorB to Floor Request
+    SET elevatorFloorA door = open                                                                            // Open Door Elevator
+    SET elevatorStartPosition = user2Floor 
+
+    SET user1Floor = CALL ButtonFloor RETURNING user1Floor                                                     // User request button to 5 floor
+    CALL requestElevator WITH elevatorFloorB AND user1Floor  RETURNING requestElevator                         // Move ElevatorB to FLoor Request
+    SET elevatorFloorB door = open                                                                             // Set Door to OPEN  ElevatorB
+    SET elevatorStartPosition = user2Floor                                                                     // Set Start Position Same Floor ElevatorB
+    SET elevatorFloorB ElevatorState = idle                                                                    // Set ElevatorB to Idle
 
 
-    SET user2Floor TO destination2Floor
-    CALL requestElevator WITH elevatorFloorB AND user2Floor AND elevatorColumn RETURNING elevatorFloorB
-    CALL Door WITH elevatorFloorB
+    GET elevatorStartPositionElevatorB                                                                         // Elevator B at 5 Floor
+    SET elevatorFloorB TO CALL Elevator WITH ElevatorB
+                                        AND idle AND close AND empty 
+                                        AND elevatorStartPositionElevatorB 
+                                        AND elevatorColumn                                                      // Set ElevatorB at Start Position
+        
+----------------
 
----
     // elevatorFloorB IDLE 5
     SET user3Floor To 9
-    SET elevatorFloorA TO 10 
-   
-
-    CALL requestElevator WITH elevatorFloorA AND user3Floor AND elevatorColumn RETURNING elevatorFloorA
-    CALL Door WITH elevatorFloorA    
-    Call ButtonFloor WITH 2 RETURNING user3Floor
+    SET elevatorFloorA TO 10  
 
 
-    CALL requestElevator WITH elevatorFloorA AND user3Floor AND elevatorColumn RETURNING elevatorFloorA
-    CALL Door WITH elevatorFloorA  
+    SET elevatorColumn = CALL Column                                                                           // Set columns elevators
+    SET elevatorStartPositionElevatorB                                                                        // ElevatorB at 9 Floor
+    SET elevatorFloorB TO CALL Elevator WITH ElevatorB 
+                                            AND idle AND close AND empty 
+                                            AND elevatorStartPosition                                   
+                                            AND  elevatorColumn                                             // Set ElevatorB at Start Position 
+    SET user3Floor = CALL ButtonFloor RETURNING user3Floor                                                  // User request button to 2 floor
+
+
+    CALL requestElevator WITH elevatorFloorB AND user3Floor RETURNING requestElevator                          // Move ElevatorB to Floor Request
+    SET elevatorFloorA door = open                                                                            // Open Door Elevator
+    SET elevatorStartPosition = user3Floor 
+
+
+    SET user3Floor = CALL ButtonFloor RETURNING user3Floor                                                     // User request button to 2 floor
+    CALL requestElevator WITH elevatorFloorB AND user3Floor  RETURNING requestElevator                         // Move ElevatorB to FLoor Request
+    SET elevatorFloorB door = open                                                                             // Set Door to OPEN  ElevatorB
+    SET elevatorStartPosition = user3Floor                                                                     // Set Start Position Same Floor ElevatorB
+    SET elevatorFloorB ElevatorState = idle                                                                    // Set ElevatorB to Idle
+
+    GET elevatorStartPositionElevatorB                                                                         // Elevator B at 2 Floor
+    SET elevatorFloorB TO CALL Elevator WITH ElevatorB
+                                        AND idle AND close AND empty 
+                                        AND elevatorStartPositionElevatorB 
+                                        AND elevatorColumn                                                      // Set ElevatorB at Start Position
 ENDSEQUENCE
 
 //SCENARIO03
@@ -225,46 +250,76 @@ ENDSEQUENCE
     Someone is on floor 3 and requests the 2nd floor. 
     Elevator A should be sent. 
 
-// SEQUENCE MAIN_SCENARIO2IO03
 
-    SET user4Floor TO 3
-    SET elevatorFloorA TO 10
-    SET elevatorFloorB TO 6
-   
+// SEQUENCE MAIN_SCENARIO3
 
 
-    CALL requestElevator WITH elevatorFloorA AND user4Floor RETURNING elevatorFloorA
-    Call Door WITH elevatorFloorA
-  
-    Call ButtonFloor WITH 2 RETURNING user4Floor
-      
-    CALL requestElevator WITH elevatorFloorA AND user4Floor RETURNING elevatorFloorA
-    CALL Door WITH elevatorFloorA
 
-----//elevatorFloorA IDLE 2
+    SET elevatorColumn = CALL Column                                                                           // Set columns elevators
+    SET elevatorStartPositionElevatorA                                                                        // ElevatorA at  10 Floor
+    SET elevatorFloorA TO CALL Elevator WITH ElevatorA
+                                            AND idle AND close AND empty 
+                                            AND elevatorStartPosition                                   
+                                            AND  elevatorColumn                                             // Set ElevatorA at Start Position 
+    SET user4Floor = CALL ButtonFloor RETURNING user4Floor                                                  // User request button to 2 floor
+
+
+
+    CALL requestElevator WITH elevatorFloorA AND user4Floor RETURNING requestElevator                          // Move ElevatorA to Floor Request
+    SET elevatorFloorA door = open                                                                            // Open Door Elevator
+    SET elevatorStartPosition = user4Floor 
+
+    SET user4Floor = CALL ButtonFloor RETURNING user3Floor                                                  // User request button to 2 floor
+    CALL requestElevator WITH elevatorFloorB AND user3Floor  RETURNING requestElevator                      // Move ElevatorA to FLoor Request
+    SET elevatorFloorA door = open                                                                          // Set Door to OPEN  Elevator
+    SET elevatorStartPosition = user4Floor                                                                  // Set Start Position Same Floor ElevatorA
+    SET elevatorFloorA ElevatorState = idle                                                                 // Set ElevatorA to Idle
+
+
+
+    GET elevatorStartPositionElevatorA                                                                         // Elevator A at 2 Floor
+    SET elevatorFloorA TO CALL Elevator WITH ElevatorA
+                                        AND idle AND close AND empty 
+                                        AND elevatorStartPositionElevatorA 
+                                        AND elevatorColumn                                                      // Set ElevatorA at Start Position
+
+-------------
+
+    //elevatorFloorA IDLE 2
     SET user5Floor TO 10 
     SET elevatorFloorB TO  6
-  
 
-    CALL requestElevator WITH elevatorFloorB AND user5Floor RETURNING elevatorFloorB
-    CALL Door WITH elevatorFloorB
-    Call ButtonFloor WITH 3 RETURNING user5Floor
+    
+    SET elevatorColumn = CALL Column                                                                           // Set columns elevators
+    SET elevatorStartPositionElevatorB                                                                        // ElevatorB at  6 Floor
+    SET elevatorFloorB TO CALL Elevator WITH ElevatorB
 
-    CALL requestElevator WITH elevatorFloorB AND user5Floor RETURNING elevatorFloorB
-    CALL Door WITH elevatorFloorB
+                                       AND idle AND close AND empty 
+                                       AND elevatorStartPosition                                   
+                                       AND  elevatorColumn                                                 // Set ElevatorB at Start Position 
+    SET user5Floor = CALL ButtonFloor RETURNING user5Floor                                                  // User request button to 3 floor
 
-ENDSEQUENCE    
+
+    CALL requestElevator WITH elevatorFloorB AND user5Floor RETURNING requestElevator                          // Move ElevatorB to Floor Request
+    SET elevatorFloorB door = open                                                                            // Open Door Elevator
+    SET elevatorStartPosition = user5Floor 
+
+    SET user5Floor = CALL ButtonFloor RETURNING user5Floor                                                  // User request button to 3 floor
+    CALL requestElevator WITH elevatorFloorB AND user5Floor  RETURNING requestElevator                      // Move ElevatorB to FLoor Request
+    SET elevatorFloorB door = open                                                                          // Set Door to OPEN  Elevator
+    SET elevatorStartPosition = user5Floor                                                                  // Set Start Position Same Floor ElevatorB
+    SET elevatorFloorB ElevatorState = idle                                                                 // Set ElevatorB to Idle
 
 
 
-<-------------------------MAIN PROGRAM ------------------------------------>
-//When user press a button outside the elevator requesting for an elevator
-//we have acces to the requestfloor and direction desired 
-
-SEQUENCE requestelevator USING request_floor AND requestion_direction 
-    CALL findElev WITH request_floor AND requestion_direction  RETURNING elevatorstars
-    CALL movedelevatortorequestfloor WITH elevatorstars AND requestfloors
+    GET elevatorStartPositionElevatorB                                                                         // Elevator B at 2 Floor
+    SET elevatorFloorB TO CALL Elevator WITH ElevatorB
+                                        AND idle AND close AND empty 
+                                        AND elevatorStartPositionElevatorB 
+                                        AND elevatorColumn                                                      // Set ElevatorB at Start Position
 ENDSEQUENCE
+
+
 
 
       
