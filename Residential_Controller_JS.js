@@ -1,6 +1,6 @@
 // OBJECT 
 
- 
+//syntax 
 class Elevator{
     constructor (pId, pStatus,pPosition,pColumn,pPositionUp,pPositionDown) {
     this.ID = pId;
