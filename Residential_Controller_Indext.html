@@ -1,5 +1,43 @@
 <!-- START SCRIP -->
-<script src="Residential_Controller_JS.js">
+<script src="Residential_Controller_JS.js">       
 
 </script>
-<body onLoad="Main_SC2()"></body>
+<body>
+          
+            <div>
+                <label>Easy Interface (Select your option):</label>                    
+					<select id="dropDownSelection" onchange="displayDivSelecteur()">
+						<option value="0">--- Select ---</option>
+						<option value="1">SCENARIO 1</option>
+						<option value="2">SCENARIO 2</option>
+						<option value="3">SCENARIO 3</option>
+						<option value="4">OTHERS</option>
+                    </select>
+                    <br>
+            </div>
+
+            <div id="entreeDate" style="display:none">
+                <label for="number">Number Columns</label>	
+			    <input type="text" id="nbColumns" onkeypress="return isNumberKey(event)"  number="number"/> 
+				<br>			
+			    <label for="number">Number Floors</label>	
+			    <input type="text" id="nbFloors" onkeypress="return isNumberKey(event)"  number="number"/>
+                <br>                			
+				<label for="number">ElevatorA StartPosition</label>	
+                <input type="text" id="nbElevatorAStartPosition" onkeypress="return isNumberKey(event)"  number="number"/>
+                <br>
+                <label for="number">ElevatorB StartPosition</label>	
+                <input type="text" id="nbElevatorBStartPosition" onkeypress="return isNumberKey(event)"  number="number"/>
+                <br>
+				<label for="number">Floor Request</label>	
+                <input type="text" id="nbFloorRequest" onkeypress="return isNumberKey(event)"  number="number"/>
+                <br>
+
+                <button onclick="Simulateur()">Simulate</button>
+				<br>
+                <label for="number">Actions :</label>
+                <br> 
+                <label id="idResult1" for="number"></label>								
+            </div>     
+
+</body>
