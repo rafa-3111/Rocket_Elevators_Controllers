@@ -1,65 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Linq;
-using System.Text;
+package commercial_controller.java;
 
-namespace Rocket_Elevator_Controller_v1
-{
-    // Buttons : Used pickup Orders
+public class  Callbutton {
 
-    public class CallButton
+    int id;
+    String status;
+
+    public callbutton()    
     {
-        public int id;
-        public string status;
+        this.id = id;
+        this.status = status;
+    }
 
-        public CallButton(int id, string status)
-        {
-            this.id = id;
-            this.status = status;
-        }
-
-        public void CallButtonPressed()
+    public void CallButtonPressed()
         {
             this.status = "Active";// Active, Inactif
         }
-    }
 
-    public class FloorButton
-    {
-        public int id;
-        public string status;
+public class Floorbutton {
 
-        public FloorButton(int id, string status)
+    int id ;
+    String status;
+
+
+    public floorbutton(int id, String status)
+
         {
             this.id = id;
             this.status = status;
         }
-    }
-    
-    // Cages    : The necessary method cage for it's moving up and down or stop to open and close 
-    //the door and the security(sensors)                     
-                   
-    public class Cage
+
+// Cages
+
+public class Cage
     {
-        public readonly int id;
-        public string status;// In-service, Loading, idle.
-        public string doors; // Open or Cloded
+        public final int id;
+        public String status;// In-service, Loading, idle.
+        public String doors; // Open or Cloded
         public int levelActual = 1;
-        public string direction = "up"; //up, down
+        public String direction = "up"; //up, down
         public int timer = 0;
         public List<Order> picReq = new List<Order>();
         public List<Order> destReq = new List<Order>();
 
-
-        public Cage(int id, string status, string doors)
+        public Cage(int id, String status, String doors)
         {
             this.id = id;
             this.status = status;
             this.doors = doors;
-        }
+        }  
 
-        public void CleanUpOrders()
+
+    public void CleanUpOrders()
         {
             for (int y = this.picReq.Count - 1; y >= 0; y--)  
             {
@@ -71,7 +62,7 @@ namespace Rocket_Elevator_Controller_v1
                 {
                     this.destReq.Add(this.picReq[y]);
                     this.picReq.Remove(this.picReq[y]);
-                    Console.WriteLine("Destination now is " + this.destReq[y].destination);
+                    System.out.println("Destination now is " + this.destReq[y].destination);
                 }
             }
             for (int y = this.destReq.Count - 1; y >= 0; y--)
@@ -84,19 +75,18 @@ namespace Rocket_Elevator_Controller_v1
                 {
                     this.destReq.Remove(this.destReq[y]);
                 }
-            }
         }
-        // Door Methods 
+       
         public void open_door()
         {
             if (this.status != "In-Service")
             {
                 this.doors = "Open";
-                Console.WriteLine("Cage " + this.id + " doors are open for 5 seconds");
+                System.out.println("Cage " + this.id + " doors are open for 5 seconds");
                 this.timer = 5;
                 while (this.timer > 0)
                 {
-                    Console.WriteLine("Closing in " + this.timer + " seconds.");
+                    System.out.println("Closing in " + this.timer + " seconds.");
                     Thread.Sleep(1000);
                     this.timer -= 1;
 
@@ -110,7 +100,7 @@ namespace Rocket_Elevator_Controller_v1
             if (this.timer < 5)
             {
                 this.doors = "Closed";
-                Console.WriteLine("Cage doors are closed");
+                System.out.println("Cage doors are closed");
                 if (this.picReq.Count == 0 && this.destReq.Count == 0)
                 {
                     this.status = "Idle";
@@ -119,7 +109,7 @@ namespace Rocket_Elevator_Controller_v1
                 {
                     this.status = "Loading";
                 }
-                Console.WriteLine("Beep number {0}.", this.timer);
+                System.out.println("Beep number {0}.", this.timer);
                 Console.Beep();
             }
         }
@@ -138,78 +128,71 @@ namespace Rocket_Elevator_Controller_v1
             }
         }
 
-        // Movement 
-        public void move_down()
+     // Movement 
+    public void move_down()
+     {
+        while (this.doors != "Closed")
         {
-            while (this.doors != "Closed")
-            {
-                this.close_door();
-            }
-            this.status = "In-Service";
-            this.direction = "down";
-            Console.WriteLine("Cage " + this.id + "\tDirection is down\tlevelActual " + this.levelActual);
-            if (this.levelActual - 1 == 0)
-            {
-                this.levelActual -= 2;
-            }
-            else
-            {
-                this.levelActual -= 1;
-            }
-            Console.WriteLine("Cage " + this.id + "\t\t\t\tlevelActual now is " + this.levelActual);
-            this.status = "Loading";
+            this.close_door();
         }
-
-        public void move_up()
+        this.status = "In-Service";
+        this.direction = "down";
+        System.out.println("Cage " + this.id + "\tDirection is down\tlevelActual " + this.levelActual);
+        if (this.levelActual - 1 == 0)
         {
-            while (this.doors != "Closed")
-            {
-                this.close_door();
-            }
-            this.status = "In-Service";
-            this.direction = "up";
-            Console.WriteLine("Cage " + this.id + "\tDirection is up\t\tlevelActual " + this.levelActual);
-            if (this.levelActual + 1 == 0)
-            {
-                this.levelActual += 2;
-            }
-            else
-            {
-                this.levelActual += 1;
-            }
-            Console.WriteLine("Cage " + this.id + "\t\t\t\tlevelActual now is " + this.levelActual);
-            this.status = "Loading";
+            this.levelActual -= 2;
         }
-    
-
-    // Columns(4) :Column object used the list of cage object for reveive the destination order
-   //from battery 
-               
-    public class Column
+        else
+        {
+            this.levelActual -= 1;
+        }
+        System.out.println("Cage " + this.id + "\t\t\t\tlevelActual now is " + this.levelActual);
+        this.status = "Loading";
+    }
+    public void move_up()
     {
-        public readonly int id;// identifier column
-        public readonly string status;
-        public readonly List<Cage> cages;//list cages (5)
-        public readonly List<int> floors_column; // floors who column deserved
-
-        public Column(int id, List<Cage> cages, List<int> floors_column)
+        while (this.doors != "Closed")
         {
-            this.id = id;
-            this.status = "Actif";// supposed Actif all times
-            this.cages = cages;
-            this.floors_column = floors_column;
+            this.close_door();
         }
+        this.status = "In-Service";
+        this.direction = "up";
+        System.out.println("Cage " + this.id + "\tDirection is up\t\tlevelActual " + this.levelActual);
+        if (this.levelActual + 1 == 0)
+        {
+            this.levelActual += 2;
+        }
+        else
+        {
+            this.levelActual += 1;
+        }
+        System.out.println("Cage " + this.id + "\t\t\t\tlevelActual now is " + this.levelActual);
+        this.status = "Loading";
+    }
+}
+public class Column
+{
+    public final int id;// identifier column
+    public String status;
+    public List<Cage> cages;//list cages (5)
+    public List<int> floors_column; // floors who column deserved
 
+
+}
+      
+    public Column(int id, List<Cage> cages, List<int> floors_column)
+    {
+        this.id = id;
+        this.status = "Actif";// supposed Actif all times
+        this.cages = cages;
+        this.floors_column = floors_column;
     }
 
-    // Panel  : simulates a panel in the reception of the building.    
-   //This panel directs the user to the appropriate column for their 
-   // Ordered floor and sends the appropriate pickup Order.  
-   
-    public class Panel
+}
+public class Panel
     {
-        public readonly List<FloorButton> floorButtons = new List<FloorButton>();
-
+        public List<FloorButton> floorButtons = new List<FloorButton>();
+    
         public Panel()                                                 
         {
             for (int x = 0 - Configuration.totalBasements; x < 0; x++)  
@@ -220,9 +203,7 @@ namespace Rocket_Elevator_Controller_v1
             {
                 floorButtons.Add(new FloorButton(x, "Inactive"));
             }
-        }
-
-        // Methods       
+        }        
         public void OrderElevator(int floorNumber, CageManager cageManager)
        
         {
@@ -235,26 +216,22 @@ namespace Rocket_Elevator_Controller_v1
             }
 
             Column myColumn = cageManager.takeColumn(1, floorNumber);
-            Console.WriteLine("Floor Ordered. \tProceed to column " + myColumn.id);
+            System.out.println("Floor Ordered. \tProceed to column " + myColumn.id);
 
         }
-
-        // Reports 
+              // Reports 
         public void GetFloorButtonsStatus()
         {
             for (int x = 0; x < this.floorButtons.Count; x++) 
             {
-                Console.WriteLine("Floor " + this.floorButtons[x].id + " button is " + this.floorButtons[x].status);
+                System.out.println("Floor " + this.floorButtons[x].id + " button is " + this.floorButtons[x].status);
             }
         }
     }
 
-    // Floors : The floor object is generated by the configuration object for each list of floor 
-    //with a call button equal to the number of total floors set by the user    
-           
     public class Floor
     {
-        public readonly int id;
+        public final int id;
         public CallButton button;
 
         public Floor(int id, CallButton button)
@@ -264,18 +241,15 @@ namespace Rocket_Elevator_Controller_v1
         }
     }
 
-    // Order : A order object is each time a floor or call button is pressed and the order is 
-    //queue the main program before being assigned to a cage for treatment
-                               
     public class Order
     {
-        public string status;// pickup
-        public string assignment = "Unassigned";//Assigned or Unassigned
+        public String status;// pickup
+        public String assignment = "Unassigned";//Assigned or Unassigned
         public int pickup; // floor pickup 
         public int destination; // floor destination
-        public string direction; // floor direction
+        public String direction; // floor direction
 
-        public Order(string status, int pickup, int destination, string direction)
+        public Order(String status, int pickup, int destination, String direction)
         {
             this.status = status;
             this.pickup = pickup;
@@ -284,11 +258,6 @@ namespace Rocket_Elevator_Controller_v1
         }
 
     }
-  
-    //Manager Columns And Cages : This is object have all teh column and cage objects for teh system 
-   //One cagemanager shold instantiaed and after config has been called the intial setup.
-
-                        
     public class CageManager
     {
         public List<Column> colList = new List<Column>();
@@ -368,7 +337,7 @@ namespace Rocket_Elevator_Controller_v1
                 int floorCounter = 2;
                 for (int x = 1; x <= Configuration.totalColumns; x++)
                 {
-                    List<int> floors_column = new List<int>();
+                    List<int> floors_column = new List<int>[];
                     floors_column.Add(1);
                     for (int i = 0; i < floorRange; i++)
                     {
@@ -379,10 +348,6 @@ namespace Rocket_Elevator_Controller_v1
                 }
             }
         }
-
-        // Methods :Method loops have all cages in a given column.Returns the cage which can most efficiently 
-        //fulfill the given order 
-     
         public Cage takeCage(string direction, int column, int reqFloor)
         {
             Cage currentCage = this.colList[column].cages[0];
@@ -393,12 +358,12 @@ namespace Rocket_Elevator_Controller_v1
                 currentCage = this.colList[column].cages[x];
                 if (currentCage.direction == direction && direction == "up" && currentCage.levelActual < reqFloor && (currentCage.status == "In-Service" || currentCage.status == "Loading"))
                 {
-                    Console.WriteLine("Same direction UP was selected");
+                    System.out.println("Same direction UP was selected");
                     return currentCage; // Returns the cage with the same direction (UP) that has not yet passed the Ordered floor
                 }
                 else if (currentCage.direction == direction && direction == "down" && currentCage.levelActual > reqFloor && (currentCage.status == "In-Service" || currentCage.status == "Loading"))
                 {
-                    Console.WriteLine("Same direction DOWN was selected");
+                    System.out.println("Same direction DOWN was selected");
                     return currentCage; // Returns the cage already going the same direction (DOWN) that has not yet passed the Ordered floor
                 }
                 else if (currentCage.status == "Idle")
@@ -418,7 +383,7 @@ namespace Rocket_Elevator_Controller_v1
                             Cage compareCage = this.colList[column].cages[i];
                             if (compareCage.status == "Idle")
                             {
-                                Console.WriteLine("Cage " + bestCage.id + "\tto be compared to " + compareCage.id);
+                                System.out.println("Cage " + bestCage.id + "\tto be compared to " + compareCage.id);
                                 int before = Math.Abs(bestCage.levelActual - reqFloor);
                                 int after = Math.Abs(compareCage.levelActual - reqFloor);
                                 if (after < before)
@@ -426,7 +391,7 @@ namespace Rocket_Elevator_Controller_v1
                                     bestCage = compareCage; // Closest idle cage
                                 }
                             }
-                            Console.WriteLine("Cage " + currentCage.id + " is selected.");
+                            System.out.println("Cage " + currentCage.id + " is selected.");
                         }
                         return bestCage;
                     }
@@ -448,11 +413,9 @@ namespace Rocket_Elevator_Controller_v1
                 }
                 x++;
             }
-            Console.WriteLine("The most suitable cage is selected");
+            System.out.println("The most suitable cage is selected");
             return currentCage;
         }
-
-        // Returns a column where the Ordered floor is served 
         public Column takeColumn(int pickup, int destination)
         {
             bool pickupServed = false;
@@ -488,41 +451,34 @@ namespace Rocket_Elevator_Controller_v1
             }
             return cageList;
         }
-
-
-        // Watch all columns and their cages as well as their current floor and status 
-        public void takeCageStatus()
-        {
-
-            Console.WriteLine($"\n{"| Column ",0} {"| Cage ",0} {"| Status ",0} {"| level Actual ",0} {"| Door status |",0}");
-
+         // Watch all columns and their cages as well as their current floor and status 
+         public void takeCageStatus()
+         {
+ 
+            System.out.println($"\n{"| Column ",0} {"| Cage ",0} {"| Status ",0} {"| level Actual ",0} {"| Door status |",0}");
+ 
             for (int x = 0; x < this.colList.Count; x++)
             {
                 for (int i = 0; i < this.colList[x].cages.Count; i++)
                 {
                     Cage currentCage = this.colList[x].cages[i];
-
-                    Console.WriteLine($"\n{this.colList[x].id,5} {currentCage.id,8} {currentCage.status,10} {currentCage.levelActual,10} {currentCage.doors,17}");
+ 
+                    System.out.println($"\n{this.colList[x].id,5} {currentCage.id,8} {currentCage.status,10} {currentCage.levelActual,10} {currentCage.doors,17}");
                 }
             }
         }
-
-        // Returns a string of the floors served by a given column 
-        public string Take_Floors_column(Column column)
+ 
+         // Returns a string of the floors served by a given column 
+        public String Take_Floors_column(Column column)
         {
             string myFloors = string.Join(",", column.floors_column);
             string myString = "Column " + column.id + ": " + myFloors;
             return myString;
         }
     }
-
-     //Configuration :This static object generates a configuration 
-    //  from user input and the corresponding floor list.              
-                     
-
     public static class Configuration
     {
-        public static bool batteryOn;
+        public static int batteryOn;
         public static int totalColumns;
         public static int cagesPerColumn;
         public static int totalFloors;
@@ -534,9 +490,9 @@ namespace Rocket_Elevator_Controller_v1
 
         public static int GetIntInput(string prompt, uint minValue)
         {
-            Console.WriteLine(prompt);
+            System.out.println(prompt);
             int myInput = -1;
-            string userInput = Console.ReadLine();
+            String userInput = System.out.ReadLine();
             while (myInput == -1)
             {
                 try
@@ -544,7 +500,7 @@ namespace Rocket_Elevator_Controller_v1
                     myInput = Convert.ToInt32(userInput);
                     if (myInput < minValue)
                     {
-                        Console.WriteLine("Value cannot be less than " + minValue + ".");
+                        System.out.println("Value cannot be less than " + minValue + ".");
                         myInput = -1;
                         userInput = "";
                     }
@@ -553,13 +509,13 @@ namespace Rocket_Elevator_Controller_v1
                 {
                     if (userInput == "")
                     {
-                        Console.WriteLine("Enter a valid number.");
-                        userInput = Console.ReadLine();
+                        System.out.println("Enter a valid number.");
+                        userInput = System.out.ReadLine();
                     }
                     else
                     {
-                        Console.WriteLine(userInput + " is not a valid number.\n Enter a valid number.");
-                        userInput = Console.ReadLine();
+                        System.out.println(userInput + " is not a valid number.\n Enter a valid number.");
+                        userInput = System.out.ReadLine();
                     }
                 }
             }
@@ -572,25 +528,25 @@ namespace Rocket_Elevator_Controller_v1
             ConsoleKeyInfo letters;
             do
             {
-                Console.WriteLine("Activate battery? [y/n]");
+                System.out.println("Activate battery? [y/n]");
                 while (Console.KeyAvailable == false)
                 {
                     Thread.Sleep(100); // Loop until valid input is entered.
                 }
 
-                letters = Console.ReadKey(true);
+                letters = System.out.ReadKey(true);
                 if (letters.Key != ConsoleKey.Y && letters.Key != ConsoleKey.N)
                 {
-                    Console.WriteLine("You pressed the '{0}' key.  make a valid selection.", letters.Key);
+                    System.out.println("You pressed the '{0}' key.  make a valid selection.", letters.Key);
                 }
                 else if (letters.Key == ConsoleKey.N)
                 {
-                    Console.WriteLine("Startup Aborted!");
+                    System.out.println("Startup Aborted!");
                     return;
                 }
             } while (letters.Key != ConsoleKey.Y);
 
-            Console.WriteLine("Initializing...");
+            System.out.println("Initializing...");
 
             // Set total number of columns 
             int totalColumns = GetIntInput("Enter the total number of columns", 1);
@@ -612,16 +568,14 @@ namespace Rocket_Elevator_Controller_v1
             Configuration.totalBasements = totalBasements;
 
             // Confirm Setup Conditions 
-            Console.WriteLine("\n-------SIMULATION-------");
-            Console.WriteLine($"\n{"Categories",-15} {"Value",15}\n");
-            Console.WriteLine($"{"Battery",-15} {"On",15}");
-            Console.WriteLine($"{"Total Columns",-15} {Configuration.totalColumns,15}");
-            Console.WriteLine($"{"Cages Per Column",-15} {Configuration.cagesPerColumn,15}");
-            Console.WriteLine($"{"Total Floors",-15} {Configuration.totalFloors,15}");
-            Console.WriteLine($"{"Total Basements",-15} {Configuration.totalBasements,15}");
+            System.out.println("\n-------SIMULATION-------");
+            System.out.println($"\n{"Categories",-15} {"Value",15}\n");
+            System.out.println($"{"Battery",-15} {"On",15}");
+            System.out.println($"{"Total Columns",-15} {Configuration.totalColumns,15}");
+            System.out.println($"{"Cages Per Column",-15} {Configuration.cagesPerColumn,15}");
+            System.out.println($"{"Total Floors",-15} {Configuration.totalFloors,15}");
+            System.out.println($"{"Total Basements",-15} {Configuration.totalBasements,15}");
         }
-
-        // To be called after Config: Generates floor objects and adds them to floor list 
         public static void GenerateFloors()
         {
             // Checks if building has basements and adds them to the floor list 
@@ -643,19 +597,13 @@ namespace Rocket_Elevator_Controller_v1
         // Reports 
         public static void GetFloorStatus()
         {
-            Console.WriteLine("\n-----------------FLOOR STATUS------------------\n");
+            System.out.println("\n-----------------FLOOR STATUS------------------\n");
             for (int x = 0; x < floorList.Count; x++)
             {
-                Console.WriteLine(String.Format("{0, -6} {1, 2} {2, -26} {3, -8}", "Floor ", floorList[x].id, ":  Active  //  Call Status: ", floorList[x].button.status));
+                System.out.println(String.Format("{0, -6} {1, 2} {2, -26} {3, -8}", "Floor ", floorList[x].id, ":  Active  //  Call Status: ", floorList[x].button.status));
             }
         }
     }
-
-
-  
-    ///           Principal function :     MAIN                                  
-              
-
     class Program
     {
 
@@ -668,7 +616,7 @@ namespace Rocket_Elevator_Controller_v1
             {
                 if (floor.button.status == "Active")
                 {
-                    Console.WriteLine("Floor button " + floor.button.id + " is active.");
+                    System.out.println("Floor button " + floor.button.id + " is active.");
                     if (floor.id > 0)
                     {
                         Order myOrder = new Order("Pickup", floor.button.id, 1, "down");
@@ -676,12 +624,12 @@ namespace Rocket_Elevator_Controller_v1
                         {
                             if (floor.button.id == Order.pickup && Order.status == "Pickup")
                             {
-                                Console.WriteLine("My Order for floor " + floor.button.id + " was not sent.");
+                                System.out.println("My Order for floor " + floor.button.id + " was not sent.");
                                 return;
                             }
                         }
                         OrderQueue.Add(myOrder);
-                        Console.WriteLine("My Order for floor " + myOrder.pickup + " was added to the Order list");
+                        System.out.println("My Order for floor " + myOrder.pickup + " was added to the Order list");
                     }
                     else
                     {
@@ -694,11 +642,11 @@ namespace Rocket_Elevator_Controller_v1
                                 return;
                             }
                         }
-                        Console.WriteLine("My Order for floor " + floor.button.id + " was added to the Order list");
+                        System.out.println("My Order for floor " + floor.button.id + " was added to the Order list");
                         OrderQueue.Add(myOrder);
                     }
                     floor.button.status = "Inactive";
-                    Console.WriteLine("Floor " + floor.button.id + " is " + floor.button.status);
+                    System.out.println("Floor " + floor.button.id + " is " + floor.button.status);
                 }
             }
 
@@ -715,11 +663,11 @@ namespace Rocket_Elevator_Controller_v1
                         {
                             if (myOrder.destination == Order.destination && Order.status == "Pickup")
                             {
-                                Console.WriteLine("My Order for floor " + button.id + " was not sent.");
+                                System.out.println("My Order for floor " + button.id + " was not sent.");
                                 return;
                             }
                         }
-                        Console.WriteLine("My Order for floor " + button.id + " was added to the Order list");
+                        System.out.println("My Order for floor " + button.id + " was added to the Order list");
                         OrderQueue.Add(myOrder);
                     }
                     else
@@ -729,15 +677,15 @@ namespace Rocket_Elevator_Controller_v1
                         {
                             if (myOrder.destination == Order.destination && Order.status == "Pickup")
                             {
-                                Console.WriteLine("My Order for floor " + button.id + " was not sent.");
+                                System.out.println("My Order for floor " + button.id + " was not sent.");
                                 return;
                             }
                         }
-                        Console.WriteLine("My Order for floor " + myOrder.pickup + " was added to the Order list");
+                        System.out.println("My Order for floor " + myOrder.pickup + " was added to the Order list");
                         OrderQueue.Add(myOrder);
                     }
                     button.status = "Inactive";
-                    Console.WriteLine("Floor " + button.id + " is " + button.status);
+                    System.out.println("Floor " + button.id + " is " + button.status);
                 }
             }
         }
@@ -750,11 +698,11 @@ namespace Rocket_Elevator_Controller_v1
                 if (Order.assignment == "Unassigned")
                 {
                     Column myColumn = myCageManager.takeColumn(Order.pickup, Order.destination);
-                    Console.WriteLine("Column " + myColumn.id + " is selected.");
+                    System.out.println("Column " + myColumn.id + " is selected.");
                     Cage myCage = myCageManager.takeCage(Order.direction, myColumn.id - 1, Order.pickup);
                     Order.assignment = "Assigned";
                     myCage.picReq.Add(Order);
-                    Console.WriteLine("Cage " + myCage.id + " receive Order for floor " + myCage.picReq[0].pickup);
+                    System.out.println("Cage " + myCage.id + " receive Order for floor " + myCage.picReq[0].pickup);
                     myCage.picReq.OrderBy(o => o.pickup);
                 }
             }
@@ -907,7 +855,6 @@ namespace Rocket_Elevator_Controller_v1
             move_elevators(testManager);
             CleanUpQueue();
         }
-
         static void Scenario1(Panel myPanel, CageManager myCageManager)
         {
 
@@ -919,14 +866,14 @@ namespace Rocket_Elevator_Controller_v1
             myCageManager.colList[1].cages[4].levelActual = 6;
 
 
-            Console.WriteLine("---------Scenario 1------------");
-            Console.WriteLine(" Elevator at : 5, direction: down");
-            Console.WriteLine(" Elevator at: 15, direction: up");
-            Console.WriteLine(" Elevator at : 1, direction: down");
-            Console.WriteLine(" Elevator at : 2, direction: down");
-            Console.WriteLine(" Elevator at : 1, direction: down");
-            Console.WriteLine(" some one is floor 1 and request destination :20 ");
-            Console.WriteLine("---------Scenario 1------------");
+            System.out.println("---------Scenario 1------------");
+            System.out.println(" Elevator at : 5, direction: down");
+            System.out.println(" Elevator at: 15, direction: up");
+            System.out.println(" Elevator at : 1, direction: down");
+            System.out.println(" Elevator at : 2, direction: down");
+            System.out.println(" Elevator at : 1, direction: down");
+            System.out.println(" some one is floor 1 and request destination :20 ");
+            System.out.println("---------Scenario 1------------");
             //Order(string status, int pickup, int destination, string direction)
             OrderQueue.Add(new Order("Destination", 0, 5, "down"));
             OrderQueue[0].assignment = "Assigned";
@@ -952,123 +899,6 @@ namespace Rocket_Elevator_Controller_v1
             }
             myCageManager.takeCageStatus();
         }
-
-        static void Scenario2(Panel myPanel, CageManager myCageManager)
-        {
-            myCageManager.colList[2].cages[0].levelActual = 1;
-            myCageManager.colList[2].cages[1].levelActual = 23;
-            myCageManager.colList[2].cages[2].levelActual = 33;
-            myCageManager.colList[2].cages[3].levelActual = 40;
-            myCageManager.colList[2].cages[4].levelActual = 39;
-            Console.WriteLine("---------Scenario 2------------");
-            Console.WriteLine(" Elevator at: 1, direction: up");
-            Console.WriteLine(" Elevator at: 23, direction: up");
-            Console.WriteLine(" Elevator at: 33, direction: down");
-            Console.WriteLine(" Elevator at: 40, direction: down");
-            Console.WriteLine(" Elevator at: 39, direction: down");
-            Console.WriteLine(" some one is floor 1 and request destination :36 ");
-            Console.WriteLine("---------Scenario 2-----------");
-            //public Order(string status, int pickup, int destination, string direction)
-            OrderQueue.Add(new Order("Destination", 0, 21, "up"));
-            OrderQueue[0].assignment = "Assigned";
-            myCageManager.colList[2].cages[0].destReq.Add(OrderQueue[0]);
-            OrderQueue.Add(new Order("Destination", 0, 28, "up"));
-            OrderQueue[1].assignment = "Assigned";
-            myCageManager.colList[2].cages[1].destReq.Add(OrderQueue[1]);
-            OrderQueue.Add(new Order("Destination", 0, 1, "down"));
-            OrderQueue[2].assignment = "Assigned";
-            myCageManager.colList[2].cages[2].destReq.Add(OrderQueue[2]);
-            OrderQueue.Add(new Order("Destination", 0, 24, "down"));
-            OrderQueue[3].assignment = "Assigned";
-            myCageManager.colList[2].cages[3].destReq.Add(OrderQueue[3]);
-            OrderQueue.Add(new Order("Destination", 0, 1, "down"));
-            OrderQueue[4].assignment = "Assigned";
-            myCageManager.colList[2].cages[4].destReq.Add(OrderQueue[4]);
-            OrderQueue.Add(new Order("Pickup", 1, 36, "up"));
-            while (OrderQueue.Count > 0)
-            {
-                LoopTest(myPanel, myCageManager);
-            }
-            myCageManager.takeCageStatus();
-        }
-
-        static void Scenario3(Panel myPanel, CageManager myCageManager)
-        {
-            myCageManager.colList[3].cages[0].levelActual = 58;
-            myCageManager.colList[3].cages[1].levelActual = 50;
-            myCageManager.colList[3].cages[2].levelActual = 46;
-            myCageManager.colList[3].cages[3].levelActual = 1;
-            myCageManager.colList[3].cages[4].levelActual = 60;
-            Console.WriteLine("---------Scenario 3------------");
-            Console.WriteLine(" Elevator at: 58, direction: down");
-            Console.WriteLine(" Elevator at: 50, direction: up");
-            Console.WriteLine(" Elevator at: 46, direction: up");
-            Console.WriteLine(" Elevator at: 1, direction: down");
-            Console.WriteLine(" Elevator at: 60, direction: up");
-            Console.WriteLine(" some one is floor 54 and request destination :1 ");
-            Console.WriteLine("---------Scenario 3-----------");
-            //public Order(string status, int pickup, int destination, string direction)
-            OrderQueue.Add(new Order("Destination", 0, 1, "down"));
-            OrderQueue[0].assignment = "Assigned";
-            myCageManager.colList[3].cages[0].destReq.Add(OrderQueue[0]);
-            OrderQueue.Add(new Order("Destination", 0, 60, "up"));
-            OrderQueue[1].assignment = "Assigned";
-            myCageManager.colList[3].cages[1].destReq.Add(OrderQueue[1]);
-            OrderQueue.Add(new Order("Destination", 0, 58, "up"));
-            OrderQueue[2].assignment = "Assigned";
-            myCageManager.colList[3].cages[2].destReq.Add(OrderQueue[2]);
-            OrderQueue.Add(new Order("Destination", 0, 54, "up"));
-            OrderQueue[3].assignment = "Assigned";
-            myCageManager.colList[3].cages[3].destReq.Add(OrderQueue[3]);
-            OrderQueue.Add(new Order("Destination", 0, 1, "up"));
-            OrderQueue[4].assignment = "Assigned";
-            myCageManager.colList[3].cages[4].destReq.Add(OrderQueue[4]);
-            LoopTest(myPanel, myCageManager);
-            OrderQueue.Add(new Order("Pickup", 54, 1, "down"));
-            while (OrderQueue.Count > 0)
-            {
-                LoopTest(myPanel, myCageManager);
-            }
-            myCageManager.takeCageStatus();
-        }
-
-        static void Scenario4(Panel myPanel, CageManager myCageManager)
-        {
-            myCageManager.colList[0].cages[0].levelActual = -4;
-            myCageManager.colList[0].cages[1].levelActual = 1;
-            myCageManager.colList[0].cages[2].levelActual = -3;
-            myCageManager.colList[0].cages[3].levelActual = -6;
-            myCageManager.colList[0].cages[4].levelActual = -1;
-            Console.WriteLine("---------Scenario 4------------");
-            Console.WriteLine(" Elevator at: -3, direction: down");
-            Console.WriteLine(" Elevator at: -6, direction: up");
-            Console.WriteLine(" Elevator at: -1, direction: down");
-            Console.WriteLine("---------Scenario 4-----------");
-            myCageManager.colList[0].cages[2].status = "Loading";
-            myCageManager.colList[0].cages[3].status = "Loading";
-            myCageManager.colList[0].cages[4].status = "Loading";
-            myCageManager.colList[0].cages[2].direction = "down";
-            myCageManager.colList[0].cages[3].direction = "up";
-            myCageManager.colList[0].cages[4].direction = "down";
-            //public Order(string status, int pickup, int destination, string direction)
-            OrderQueue.Add(new Order("Destination", 0, -5, "down"));
-            OrderQueue[0].assignment = "Assigned";
-            myCageManager.colList[0].cages[2].destReq.Add(OrderQueue[0]);
-            OrderQueue.Add(new Order("Destination", 0, 1, "up"));
-            OrderQueue[1].assignment = "Assigned";
-            myCageManager.colList[0].cages[3].destReq.Add(OrderQueue[1]);
-            OrderQueue.Add(new Order("Destination", 0, -6, "down"));
-            OrderQueue[2].assignment = "Assigned";         
-            myCageManager.colList[0].cages[4].destReq.Add(OrderQueue[2]);
-            LoopTest(myPanel, myCageManager);
-
-            while (OrderQueue.Count > 0)
-            {
-                LoopTest(myPanel, myCageManager);
-            }
-            myCageManager.takeCageStatus();
-        }
-
         static void Main(string[] args)
         {
             Console.Title = "Rockets_Controllers_elevators";
@@ -1077,7 +907,7 @@ namespace Rocket_Elevator_Controller_v1
             ConsoleKeyInfo letters;
             do
             {
-                Console.WriteLine("Do you want to teste one scenario? [y/n]");
+                System.out.println("Do you want to teste one scenario? [y/n]");
 
                 while (Console.KeyAvailable == false)
                 {
@@ -1133,28 +963,13 @@ namespace Rocket_Elevator_Controller_v1
                 {
                     Scenario1(myPanel, myCageManager);
                 }
-                else if (selection == 2)
-                {
-                    Scenario2(myPanel, myCageManager);
-                }
-                else if (selection == 3)
-                {
-                    Scenario3(myPanel, myCageManager);
-                }
-                else if (selection == 4)
-                {
-                    Scenario4(myPanel, myCageManager);
-                }
                 else if (selection == 0)
                 {
                     Configuration.batteryOn = false;
                 }
                 else
                 {
-                    Console.WriteLine(selection + " is not a valid selection. Make a valid selection.");
+                    System.out.println(selection + " is not a valid selection. Make a valid selection.");
                 }
             }
         }
-    }
-}
-}
